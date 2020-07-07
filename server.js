@@ -3,7 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-
+const { stock, customers } = require("../data/promo");
 express()
   .use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -20,7 +20,14 @@ express()
   .set("view engine", "ejs")
   .post("/order", (req, res) => {
     const newOrder = req.body;
-    console.log(newOrder);
+    const stockLevels = req.stock;
+    console.log(stockLevels);
+    if (newOrder.country === "Canada") {
+      console.log("good");
+      res.json({ status: "success" });
+    } else {
+      console.log("wrong country");
+    }
   })
   // endpoints
 
