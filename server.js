@@ -24,14 +24,19 @@ express()
     const newOrder = req.body.order;
     console.log(newOrder);
     const tshirtSize = req.body.size;
+    const firstName = req.body.givenName;
+    const lastName = req.body.surname;
+    const clEmail = req.body.email;
+    const clAddres = req.body.address;
     const tshirtSizeCheck = stock.shirt;
     const sizeStock = tshirtSizeCheck[tshirtSize];
     const itemStock = stock[newOrder];
-    const shipToCountry = req.body.country;
-
+    const countryShip = req.body.country;
+    console.log(countryShip);
     console.log(tshirtSize);
     console.log(sizeStock);
     console.log(stock.shirt.small);
+
     //shirt conditions
     let inStock = () => {
       if (newOrder === "shirt") {
@@ -52,13 +57,37 @@ express()
       }
     };
     //country
-    const countryShip = req.body.country;
-    console.log(countryShip);
-    if (shipToCountry !== "Canada") {
-      res.json({ status: "error", error: "undeliverable" });
-    } else {
-      inStock();
-    }
+    let country = () => {
+      if (countryShip !== "Canada") {
+        res.json({ status: "error", error: "undeliverable" });
+      } else {
+        inStock();
+      }
+    };
+
+    //customer check
+    let repeatBuy = () => {
+      customers.forEach((customer) => {
+        if (
+          (customer.givenName === firstName && customer.surname === lastName) ||
+          customer.email === clEmail ||
+          customer.address === clAddres
+        ) {
+          res.json({ status: "error", error: "repeat-customer" });
+        } else {
+          country();
+        }
+      });
+    };
+    // empty data
+    const reqVars = Object.values(req.body);
+    reqVars.forEach((param) => {
+      if (param === "undefined") {
+        res.json({ status: "error", error: "missing-data" });
+      } else {
+        repeatBuy();
+      }
+    });
   })
   // endpoints
 
