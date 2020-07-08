@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const { stock, customers } = require("./data/promo");
+const orderGood = (req, res) => res.render("./data/success");
 express()
   .use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -41,7 +42,7 @@ express()
     let inStock = () => {
       if (newOrder === "shirt") {
         if (sizeStock > 0) {
-          console.log("gotcha");
+          res.json({ status: "success" });
         } else {
           console.log("not enough fam");
           res.json({ status: "error", error: "unavailable" });
@@ -49,7 +50,7 @@ express()
         // res.json({ status: "success" });
       } else {
         if (itemStock > 0) {
-          console.log("yerrrr");
+          res.json({ status: "success" });
         } else {
           console.log("not enough fam");
           res.json({ status: "error", error: "unavailable" });
@@ -92,4 +93,6 @@ express()
   // endpoints
 
   .get("*", (req, res) => res.send("Dang. 404."))
+  .get("/order-confirmed", orderGood)
+
   .listen(8000, () => console.log(`Listening on port 8000`));
