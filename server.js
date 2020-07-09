@@ -39,28 +39,26 @@ express()
     console.log(stock.shirt.small);
 
     //shirt conditions
+    let response = { status: "success" };
     let inStock = () => {
       if (newOrder === "shirt") {
-        if (sizeStock > 0) {
-          res.json({ status: "success" });
-        } else {
+        if (sizeStock < 1) {
           console.log("not enough fam");
-          res.json({ status: "error", error: "unavailable" });
+          response = { status: "error", error: "unavailable" };
         }
-        // res.json({ status: "success" });
       } else {
         if (itemStock > 0) {
           res.json({ status: "success" });
         } else {
           console.log("not enough fam");
-          res.json({ status: "error", error: "unavailable" });
+          response = { status: "error", error: "unavailable" };
         }
       }
     };
     //country
     let country = () => {
       if (countryShip !== "Canada") {
-        res.json({ status: "error", error: "undeliverable" });
+        response = { status: "error", error: "undeliverable" };
       } else {
         inStock();
       }
@@ -74,7 +72,7 @@ express()
           customer.email === clEmail ||
           customer.address === clAddres
         ) {
-          res.json({ status: "error", error: "repeat-customer" });
+          response = { status: "error", error: "repeat-customer" };
         } else {
           country();
         }
@@ -84,11 +82,12 @@ express()
     const reqVars = Object.values(req.body);
     reqVars.forEach((param) => {
       if (param === "undefined") {
-        res.json({ status: "error", error: "missing-data" });
+        response = { status: "error", error: "missing-data" };
       } else {
         repeatBuy();
       }
     });
+    res.json(response);
   })
   // endpoints
 
