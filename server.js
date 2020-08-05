@@ -4,7 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const { stock, customers } = require("./data/promo");
-const orderGood = (req, res) => res.render("./data/success");
+const orderGood = (req, res) => res.render("./success");
+const test = (req, res) => res.render("./views/test");
+
 express()
   .use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -91,7 +93,8 @@ express()
   })
   // endpoints
 
-  .get("*", (req, res) => res.send("Dang. 404."))
   .get("/order-confirmed", orderGood)
+  .get("/test/test", test)
+  .get("*", (req, res) => res.send("Dang. 404."))
 
   .listen(8000, () => console.log(`Listening on port 8000`));
